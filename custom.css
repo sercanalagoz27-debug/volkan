@@ -1,11 +1,3 @@
-.nav-logo {
-  width: 130% !important;
-  max-width: none !important;
-  height: auto !important;
-  transform: none !important;
-}
-
 .nav-brand {
-  overflow: visible;
-  width: auto !important;
+  overflow: visible !important;
 }
