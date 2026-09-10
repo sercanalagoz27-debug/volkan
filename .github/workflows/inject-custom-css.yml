@@ -1,0 +1,34 @@
+name: Inject custom CSS
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/inject-custom-css.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  inject:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add custom stylesheet link
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          tag = '<link rel="stylesheet" href="custom.css"/>'
+          if tag not in s:
+              s = s.replace('</head>', tag + '</head>', 1)
+              p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit index update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Load custom site overrides"
+          git push
